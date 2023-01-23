@@ -1,25 +1,16 @@
 <script>
-  export let name;
-  let gifs = [];
-  let searchTerm = "";
+  import Tab, { Label } from '@smui/tab';
+  import TabBar from '@smui/tab-bar';
 
-  async function searchForGif(e) {
-    try {
-      const returnValue = await fetch(`/giphy?term=${searchTerm}`);
-      const response = await returnValue.json();
-      gifs = response.data;
-    } catch (error) {
-      console.error(error);
-    }
-  }
+  import MyForm from './routes/Form.svelte';
+  import MyDownload from './routes/Download.svelte';
+  import MyGif from './routes/Gif.svelte';
+
+  export let name;
+  let active = 'Home';
 </script>
 
 <style>
-  .gifs-grid {
-    display: grid;
-    grid-gap: 10px;
-    grid-template-columns: repeat(5, 1fr);
-  }
 
   main {
     text-align: center;
@@ -42,19 +33,40 @@
   }
 </style>
 
-<main>
-  <h1>Hello {name}!</h1>
-  <div class="search-block">
-    <input type="text" placeholder="Search for gif" bind:value={searchTerm} />
-    <button on:click={searchForGif}>Search</button>
-  </div>
-  <div class="gifs">
-    {#if gifs.length > 0}
-      <div class="gifs-grid">
-        {#each gifs as gif}
-          <iframe src={gif.embed_url} title={gif.title} />
-        {/each}
-      </div>
-    {:else}No gifs to show yet{/if}
-  </div>
-</main>
+<!-- Material Icons -->
+<link
+  rel="stylesheet"
+  href="https://fonts.googleapis.com/icon?family=Material+Icons"
+/>
+<!-- Roboto -->
+<link
+  rel="stylesheet"
+  href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,600,700"
+/>
+<!-- Roboto Mono -->
+<link
+  rel="stylesheet"
+  href="https://fonts.googleapis.com/css?family=Roboto+Mono"
+/>
+<link
+  rel="stylesheet"
+  href="https://cdn.jsdelivr.net/npm/svelte-material-ui@6.0.0/bare.min.css"
+/>
+
+<TabBar tabs={['Home', 'Form', 'Download']} let:tab bind:active>
+    <Tab {tab}>
+      <Label>{tab}</Label>
+    </Tab>
+</TabBar>
+
+{#if active == 'Form' }
+  <MyForm />
+{:else if active == 'Download'}
+  <MyDownload />
+{:else }
+  <main>
+    <h1>Hello {name}!</h1>
+    <MyGif />
+  </main>
+{/if}
+
